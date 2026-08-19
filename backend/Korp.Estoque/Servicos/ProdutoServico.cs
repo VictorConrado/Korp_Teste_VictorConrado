@@ -116,4 +116,42 @@ public class ProdutoServico : IProdutoServico
             Saldo = produto.Saldo
         };
     }
+
+    public async Task BaixarEstoqueAsync(
+    BaixarEstoqueRequisicao requisicao)
+    {
+        if (requisicao.Quantidade <= 0)
+        {
+            throw new ArgumentException(
+                "A quantidade deve ser maior que zero.");
+        }
+
+        var produto = await _contexto.Produtos
+            .FirstOrDefaultAsync(x => x.Id == requisicao.ProdutoId);
+
+        if (produto is null)
+        {
+            throw new ProdutoNaoEncontradoExcecao(
+                requisicao.ProdutoId);
+        }
+
+        if (produto.Saldo < requisicao.Quantidade)
+        {
+            throw new EstoqueInsuficienteExcecao(
+                produto.Id,
+                produto.Saldo,
+                requisicao.Quantidade);
+        }
+
+        produto.Saldo -= requisicao.Quantidade;
+
+        try
+        {
+            await _contexto.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            throw new ConflitoEstoqueExcecao();
+        }
+    }
 }

@@ -16,4 +16,8 @@ public interface IProdutoServico
         AtualizarProdutoRequisicao requisicao);
 
     Task ExcluirAsync(int id);
+
+     Task BaixarEstoqueAsync(
+    BaixarEstoqueRequisicao requisicao);
+
 }

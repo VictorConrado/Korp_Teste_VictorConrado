@@ -1,6 +1,8 @@
-using Microsoft.EntityFrameworkCore;
 using Korp.Estoque.Dados;
+using Korp.Estoque.Middleware;
 using Korp.Estoque.Servicos;
+using Microsoft.EntityFrameworkCore;
+
 
 var construtor = WebApplication.CreateBuilder(args);
 
@@ -24,6 +26,8 @@ if (aplicacao.Environment.IsDevelopment())
 }
 
 aplicacao.UseHttpsRedirection();
+
+aplicacao.UseMiddleware<TratamentoExcecoesMiddleware>();
 
 aplicacao.MapControllers();
 
