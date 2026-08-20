@@ -1,0 +1,165 @@
+:host {
+  display: block;
+}
+
+.aplicacao {
+  min-height: 100vh;
+  display: flex;
+  background: #f4f6f8;
+  color: #1f2937;
+}
+
+.menu-lateral {
+  width: 250px;
+  min-height: 100vh;
+  background: #17212b;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  padding: 24px 16px;
+  box-sizing: border-box;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 10px 32px;
+}
+
+.logo-icone {
+  width: 38px;
+  height: 38px;
+  border-radius: 9px;
+  background: #2563eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 20px;
+}
+
+.logo strong {
+  display: block;
+  font-size: 18px;
+}
+
+.logo small {
+  display: block;
+  margin-top: 2px;
+  color: #9ca3af;
+  font-size: 12px;
+}
+
+.navegacao {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.navegacao a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 8px;
+  color: #cbd5e1;
+  text-decoration: none;
+  transition: 0.2s;
+  font-size: 14px;
+}
+
+.navegacao a:hover {
+  background: #243342;
+  color: #ffffff;
+}
+
+.navegacao a.ativo {
+  background: #2563eb;
+  color: #ffffff;
+}
+
+.navegacao a span {
+  width: 20px;
+  text-align: center;
+}
+
+.rodape-menu {
+  margin-top: auto;
+  padding: 16px 10px 4px;
+  color: #64748b;
+  font-size: 11px;
+}
+
+.rodape-menu span,
+.rodape-menu small {
+  display: block;
+}
+
+.rodape-menu small {
+  margin-top: 4px;
+}
+
+.conteudo {
+  flex: 1;
+  min-width: 0;
+}
+
+.barra-superior {
+  height: 64px;
+  background: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  padding: 0 32px;
+  box-sizing: border-box;
+}
+
+.titulo-sistema {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.area-conteudo {
+  padding: 32px;
+}
+
+
+@media (max-width: 768px) {
+  .menu-lateral {
+    width: 72px;
+    padding: 20px 10px;
+  }
+
+  .logo {
+    justify-content: center;
+    padding: 0 0 28px;
+  }
+
+  .logo div,
+  .navegacao a:not(.ativo)::after,
+  .navegacao a {
+    font-size: 0;
+  }
+
+  .logo-icone {
+    flex-shrink: 0;
+  }
+
+  .navegacao a {
+    justify-content: center;
+    padding: 12px;
+  }
+
+  .navegacao a span {
+    font-size: 18px;
+  }
+
+  .rodape-menu {
+    display: none;
+  }
+
+  .area-conteudo {
+    padding: 20px;
+  }
+}
