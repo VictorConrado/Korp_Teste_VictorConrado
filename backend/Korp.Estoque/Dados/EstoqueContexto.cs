@@ -12,6 +12,8 @@ public class EstoqueContexto : DbContext
 
     public DbSet<Produto> Produtos => Set<Produto>();
 
+    public DbSet<OperacaoIdempotencia> OperacoesIdempotencia => Set<OperacaoIdempotencia>();
+
     protected override void OnModelCreating(ModelBuilder modelo)
     {
         modelo.Entity<Produto>(produto =>
@@ -37,6 +39,31 @@ public class EstoqueContexto : DbContext
             produto.Property(x => x.RowVersion)
                 .IsRowVersion()
                 .IsConcurrencyToken();
+        });
+
+        modelo.Entity<OperacaoIdempotencia>(operacao =>
+        {
+            operacao.ToTable("OperacoesIdempotencia");
+
+            operacao.HasKey(x => x.Id);
+
+            operacao.Property(x => x.Chave)
+                .IsRequired()
+                .HasMaxLength(100);
+
+            operacao.Property(x => x.Operacao)
+                .IsRequired()
+                .HasMaxLength(100);
+
+            operacao.Property(x => x.CriadaEm)
+                .IsRequired();
+
+            operacao.HasIndex(x => new
+            {
+                x.Chave,
+                x.Operacao
+            })
+            .IsUnique();
         });
     }
 }

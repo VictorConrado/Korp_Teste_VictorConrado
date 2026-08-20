@@ -126,8 +126,27 @@ public class ProdutoServico : IProdutoServico
                 "A quantidade deve ser maior que zero.");
         }
 
+        if (string.IsNullOrWhiteSpace(
+            requisicao.ChaveIdempotencia))
+        {
+            throw new ArgumentException(
+                "A chave de idempotência é obrigatória.");
+        }
+
+        var operacaoExistente =
+            await _contexto.OperacoesIdempotencia
+                .AnyAsync(x =>
+                    x.Chave == requisicao.ChaveIdempotencia &&
+                    x.Operacao == "BaixaEstoque");
+
+        if (operacaoExistente)
+        {
+            return;
+        }
+
         var produto = await _contexto.Produtos
-            .FirstOrDefaultAsync(x => x.Id == requisicao.ProdutoId);
+            .FirstOrDefaultAsync(x =>
+                x.Id == requisicao.ProdutoId);
 
         if (produto is null)
         {
@@ -145,11 +164,24 @@ public class ProdutoServico : IProdutoServico
 
         produto.Saldo -= requisicao.Quantidade;
 
+        var operacao = new OperacaoIdempotencia
+        {
+            Chave = requisicao.ChaveIdempotencia,
+            Operacao = "BaixaEstoque",
+            CriadaEm = DateTime.UtcNow
+        };
+
+        _contexto.OperacoesIdempotencia.Add(operacao);
+
         try
         {
             await _contexto.SaveChangesAsync();
         }
         catch (DbUpdateConcurrencyException)
+        {
+            throw new ConflitoEstoqueExcecao();
+        }
+        catch (DbUpdateException)
         {
             throw new ConflitoEstoqueExcecao();
         }
