@@ -17,7 +17,20 @@ construtor.Services.AddDbContext<EstoqueContexto>(opcoes =>
 
 construtor.Services.AddScoped<IProdutoServico, ProdutoServico>();
 
+construtor.Services.AddCors(opcoes =>
+{
+    opcoes.AddPolicy("Frontend", politica =>
+    {
+        politica
+            .WithOrigins("http://localhost:4200")
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
 var aplicacao = construtor.Build();
+
+aplicacao.UseCors("Frontend");
 
 if (aplicacao.Environment.IsDevelopment())
 {

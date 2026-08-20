@@ -1,1 +1,110 @@
-<p>produtos works!</p>
+<div class="pagina">
+
+  <div class="cabecalho">
+    <div>
+      <span class="subtitulo">Estoque</span>
+
+      <h1>Produtos</h1>
+
+      <p>
+        Consulte os produtos e seus respectivos saldos.
+      </p>
+    </div>
+
+    <button
+      class="botao-atualizar"
+      type="button"
+      (click)="carregarProdutos()"
+      [disabled]="carregando">
+      Atualizar
+    </button>
+  </div>
+
+  @if (carregando) {
+    <div class="estado">
+      <span>Carregando produtos...</span>
+    </div>
+  }
+
+  @if (mensagemErro) {
+    <div class="erro">
+      {{ mensagemErro }}
+
+      <button
+        type="button"
+        (click)="carregarProdutos()">
+        Tentar novamente
+      </button>
+    </div>
+  }
+
+  @if (!carregando && !mensagemErro) {
+
+    @if (produtos.length === 0) {
+
+      <div class="estado">
+        Nenhum produto encontrado.
+      </div>
+
+    } @else {
+
+      <div class="tabela-container">
+
+        <table>
+
+          <thead>
+            <tr>
+              <th>Código</th>
+              <th>Descrição</th>
+              <th>Saldo</th>
+              <th>Situação</th>
+            </tr>
+          </thead>
+
+          <tbody>
+
+            @for (produto of produtos; track produto.id) {
+
+              <tr>
+
+                <td>
+                  <strong>{{ produto.codigo }}</strong>
+                </td>
+
+                <td>
+                  {{ produto.descricao }}
+                </td>
+
+                <td>
+                  {{ produto.saldo }}
+                </td>
+
+                <td>
+
+                  @if (produto.saldo > 0) {
+                    <span class="situacao disponivel">
+                      Disponível
+                    </span>
+                  } @else {
+                    <span class="situacao indisponivel">
+                      Sem estoque
+                    </span>
+                  }
+
+                </td>
+
+              </tr>
+
+            }
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    }
+
+  }
+
+</div>
