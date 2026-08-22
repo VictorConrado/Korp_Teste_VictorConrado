@@ -33,7 +33,7 @@ public class NotaFiscalServico : INotaFiscalServico
         {
             Numero = GerarNumero(),
             DataEmissao = DateTime.UtcNow,
-            Status = StatusNotaFiscal.Rascunho
+            Status = StatusNotaFiscal.Aberta
         };
 
         foreach (var itemRequisicao in requisicao.Itens)
@@ -85,6 +85,17 @@ public class NotaFiscalServico : INotaFiscalServico
         return Mapear(nota);
     }
 
+    public async Task<List<NotaFiscalResposta>> ListarAsync()
+    {
+        var notas = await _contexto.NotasFiscais
+         .Include(x => x.Itens)
+         .OrderByDescending(x => x.DataEmissao)
+         .ToListAsync();
+
+         return notas
+           .Select(Mapear)
+           .ToList();}
+
     public async Task<NotaFiscalResposta> BuscarPorIdAsync(
         int id)
     {
@@ -112,7 +123,7 @@ public class NotaFiscalServico : INotaFiscalServico
             throw new NotaFiscalNaoEncontradaExcecao(id);
         }
 
-        if (nota.Status == StatusNotaFiscal.Impressa)
+        if (nota.Status == StatusNotaFiscal.Fechada)
         {
             throw new NotaFiscalJaImpressaExcecao(id);
         }
@@ -152,7 +163,7 @@ public class NotaFiscalServico : INotaFiscalServico
                 });
         }
 
-        nota.Status = StatusNotaFiscal.Impressa;
+        nota.Status = StatusNotaFiscal.Fechada;
 
         await _contexto.SaveChangesAsync();
 

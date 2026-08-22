@@ -4,3 +4,15 @@ export interface Produto {
   descricao: string;
   saldo: number;
 }
+
+export interface CriarProdutoRequisicao {
+  codigo: string;
+  descricao: string;
+  saldo: number;
+}
+
+export interface AtualizarProdutoRequisicao {
+  codigo: string;
+  descricao: string;
+  saldo: number;
+}

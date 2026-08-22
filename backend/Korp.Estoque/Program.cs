@@ -30,8 +30,6 @@ construtor.Services.AddCors(opcoes =>
 
 var aplicacao = construtor.Build();
 
-aplicacao.UseCors("Frontend");
-
 if (aplicacao.Environment.IsDevelopment())
 {
     aplicacao.UseSwagger();
@@ -39,6 +37,8 @@ if (aplicacao.Environment.IsDevelopment())
 }
 
 aplicacao.UseHttpsRedirection();
+
+aplicacao.UseCors("Frontend");
 
 aplicacao.UseMiddleware<TratamentoExcecoesMiddleware>();
 

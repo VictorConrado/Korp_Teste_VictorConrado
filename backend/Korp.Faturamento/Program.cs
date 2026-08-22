@@ -25,7 +25,20 @@ construtor.Services.AddHttpClient<IEstoqueServico, EstoqueServico>(
 
 construtor.Services.AddScoped<INotaFiscalServico, NotaFiscalServico>();
 
+construtor.Services.AddCors(opcoes =>
+{
+    opcoes.AddPolicy("Frontend", politica =>
+    {
+        politica
+            .WithOrigins("http://localhost:4200")
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
 var aplicacao = construtor.Build();
+
+
 
 if (aplicacao.Environment.IsDevelopment())
 {
@@ -34,6 +47,8 @@ if (aplicacao.Environment.IsDevelopment())
 }
 
 aplicacao.UseHttpsRedirection();
+
+aplicacao.UseCors("Frontend");
 
 aplicacao.UseMiddleware<TratamentoExcecoesMiddleware>();
 

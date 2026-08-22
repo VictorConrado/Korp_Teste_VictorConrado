@@ -50,6 +50,11 @@ public class TratamentoExcecoesMiddleware
                 mensagem = excecao.Message;
                 break;
 
+            case EstoqueIndisponivelExcecao:
+                status = HttpStatusCode.ServiceUnavailable;
+                mensagem = excecao.Message;
+                break;
+
             case ArgumentException:
                 status = HttpStatusCode.BadRequest;
                 mensagem = excecao.Message;

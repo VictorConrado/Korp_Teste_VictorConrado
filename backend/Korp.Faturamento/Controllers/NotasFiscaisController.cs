@@ -29,6 +29,15 @@ public class NotasFiscaisController : ControllerBase
             resposta);
     }
 
+    [HttpGet]
+    public async Task<IActionResult> Listar()
+    {
+        var respostas =
+            await _notaFiscalServico.ListarAsync();
+
+        return Ok(respostas);
+    }
+
     [HttpGet("{id:int}")]
     public async Task<IActionResult> BuscarPorId(int id)
     {

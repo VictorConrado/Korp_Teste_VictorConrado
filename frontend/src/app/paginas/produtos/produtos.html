@@ -2,109 +2,220 @@
 
   <div class="cabecalho">
     <div>
-      <span class="subtitulo">Estoque</span>
-
       <h1>Produtos</h1>
-
       <p>
-        Consulte os produtos e seus respectivos saldos.
+        Consulte e gerencie os produtos disponíveis em estoque.
       </p>
     </div>
 
     <button
-      class="botao-atualizar"
-      type="button"
-      (click)="carregarProdutos()"
-      [disabled]="carregando">
-      Atualizar
+      class="botao-principal"
+      (click)="abrirCadastro()">
+      + Novo produto
     </button>
   </div>
 
-  @if (carregando) {
-    <div class="estado">
-      <span>Carregando produtos...</span>
+  @if (mensagemSucesso) {
+    <div class="mensagem sucesso">
+      {{ mensagemSucesso }}
     </div>
   }
 
   @if (mensagemErro) {
-    <div class="erro">
+    <div class="mensagem erro">
       {{ mensagemErro }}
-
-      <button
-        type="button"
-        (click)="carregarProdutos()">
-        Tentar novamente
-      </button>
     </div>
   }
 
-  @if (!carregando && !mensagemErro) {
+  <div class="pesquisa">
 
-    @if (produtos.length === 0) {
+    <input
+      type="number"
+      [(ngModel)]="idPesquisa"
+      placeholder="Pesquisar por ID">
 
-      <div class="estado">
-        Nenhum produto encontrado.
-      </div>
+    <button
+      class="botao-secundario"
+      (click)="pesquisar()">
+      Pesquisar
+    </button>
 
-    } @else {
-
-      <div class="tabela-container">
-
-        <table>
-
-          <thead>
-            <tr>
-              <th>Código</th>
-              <th>Descrição</th>
-              <th>Saldo</th>
-              <th>Situação</th>
-            </tr>
-          </thead>
-
-          <tbody>
-
-            @for (produto of produtos; track produto.id) {
-
-              <tr>
-
-                <td>
-                  <strong>{{ produto.codigo }}</strong>
-                </td>
-
-                <td>
-                  {{ produto.descricao }}
-                </td>
-
-                <td>
-                  {{ produto.saldo }}
-                </td>
-
-                <td>
-
-                  @if (produto.saldo > 0) {
-                    <span class="situacao disponivel">
-                      Disponível
-                    </span>
-                  } @else {
-                    <span class="situacao indisponivel">
-                      Sem estoque
-                    </span>
-                  }
-
-                </td>
-
-              </tr>
-
-            }
-
-          </tbody>
-
-        </table>
-
-      </div>
-
+    @if (idPesquisa) {
+      <button
+        class="botao-secundario"
+        (click)="limparPesquisa()">
+        Limpar
+      </button>
     }
+
+  </div>
+
+  @if (carregando) {
+
+    <div class="carregando">
+      Carregando produtos...
+    </div>
+
+  } @else {
+
+    <div class="tabela-container">
+
+      <table>
+
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Código</th>
+            <th>Descrição</th>
+            <th>Saldo</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          @for (produto of produtos; track produto.id) {
+
+            <tr>
+
+              <td>
+                {{ produto.id }}
+              </td>
+
+              <td>
+                {{ produto.codigo }}
+              </td>
+
+              <td>
+                {{ produto.descricao }}
+              </td>
+
+              <td>
+                {{ produto.saldo }}
+              </td>
+
+              <td class="acoes">
+
+                <button
+                  class="botao-editar"
+                  (click)="abrirEdicao(produto)">
+                  Editar
+                </button>
+
+                <button
+                  class="botao-excluir"
+                  (click)="excluir(produto)">
+                  Excluir
+                </button>
+
+              </td>
+
+            </tr>
+
+          }
+
+          @empty {
+
+            <tr>
+              <td
+                colspan="5"
+                class="vazio">
+
+                Nenhum produto encontrado.
+
+              </td>
+            </tr>
+
+          }
+
+        </tbody>
+
+      </table>
+
+    </div>
 
   }
 
 </div>
+
+
+@if (formularioAberto) {
+
+  <div class="modal-fundo">
+
+    <div class="modal">
+
+      <div class="modal-cabecalho">
+
+        <h2>
+          {{ modoEdicao ? 'Editar produto' : 'Novo produto' }}
+        </h2>
+
+        <button
+          class="fechar"
+          (click)="fecharFormulario()">
+          ×
+        </button>
+
+      </div>
+
+      <div class="formulario">
+
+        <label>
+          Código
+        </label>
+
+        <input
+          type="text"
+          [(ngModel)]="produtoFormulario.codigo"
+          placeholder="Ex.: 001">
+
+        <label>
+          Descrição
+        </label>
+
+        <input
+          type="text"
+          [(ngModel)]="produtoFormulario.descricao"
+          placeholder="Ex.: Notebook">
+
+        <label>
+          Saldo
+        </label>
+
+        <input
+          type="number"
+          min="0"
+          [(ngModel)]="produtoFormulario.saldo">
+
+      </div>
+
+      <div class="modal-acoes">
+
+        <button
+          class="botao-secundario"
+          [disabled]="salvando"
+          (click)="fecharFormulario()">
+          Cancelar
+        </button>
+
+        <button
+          class="botao-principal"
+          [disabled]="salvando"
+          (click)="salvar()">
+
+          @if (salvando) {
+            Salvando...
+          } @else {
+            Salvar
+          }
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+}

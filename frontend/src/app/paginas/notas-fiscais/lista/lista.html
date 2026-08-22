@@ -1,1 +1,211 @@
-<p>lista works!</p>
+<div class="pagina">
+
+  <div class="cabecalho">
+
+    <div>
+      <span class="subtitulo">Faturamento</span>
+
+      <h1>Notas fiscais</h1>
+
+      <p>
+        Consulte e gerencie as notas fiscais emitidas.
+      </p>
+    </div>
+
+    <div class="acoes-cabecalho">
+
+      <button
+        class="botao-secundario"
+        type="button"
+        (click)="carregarNotas()"
+        [disabled]="carregando">
+        Atualizar
+      </button>
+
+      <a
+        class="botao-principal"
+        routerLink="/notas-fiscais/nova">
+        + Nova nota fiscal
+      </a>
+
+    </div>
+
+  </div>
+
+  @if (mensagemErro) {
+
+    <div class="mensagem mensagem-erro">
+
+      <div class="conteudo-mensagem">
+        <strong>Não foi possível concluir a operação.</strong>
+
+        <span>
+          {{ mensagemErro }}
+        </span>
+      </div>
+
+      <button
+        type="button"
+        (click)="mensagemErro = ''">
+        Fechar
+      </button>
+
+    </div>
+
+  }
+
+  @if (mensagemSucesso) {
+
+    <div class="mensagem mensagem-sucesso">
+
+      <div class="conteudo-mensagem">
+        <strong>Operação concluída.</strong>
+
+        <span>
+          {{ mensagemSucesso }}
+        </span>
+      </div>
+
+      <button
+        type="button"
+        (click)="mensagemSucesso = ''">
+        Fechar
+      </button>
+
+    </div>
+
+  }
+
+  @if (carregando) {
+
+    <div class="estado">
+      Carregando notas fiscais...
+    </div>
+
+  }
+
+  @if (!carregando && notasFiscais.length === 0 && !mensagemErro) {
+
+    <div class="estado vazio">
+
+      <strong>Nenhuma nota fiscal encontrada.</strong>
+
+      <span>
+        Crie sua primeira nota fiscal para começar.
+      </span>
+
+      <a
+        class="botao-principal"
+        routerLink="/notas-fiscais/nova">
+        Criar nota fiscal
+      </a>
+
+    </div>
+
+  }
+
+  @if (!carregando && notasFiscais.length > 0) {
+
+    <div class="tabela-container">
+
+      <table>
+
+        <thead>
+
+          <tr>
+            <th>Número</th>
+            <th>Data de emissão</th>
+            <th>Itens</th>
+            <th>Valor total</th>
+            <th>Status</th>
+            <th>Ação</th>
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+          @for (nota of notasFiscais; track nota.id) {
+
+            <tr>
+
+              <td>
+                <strong>{{ nota.numero }}</strong>
+              </td>
+
+              <td>
+                {{ nota.dataEmissao | date:'dd/MM/yyyy HH:mm' }}
+              </td>
+
+              <td>
+                {{ nota.itens.length }}
+              </td>
+
+              <td>
+                {{ nota.valorTotal | currency:'BRL':'symbol':'1.2-2' }}
+              </td>
+
+              <td>
+
+                @if (imprimindoId === nota.id) {
+
+                  <span class="status processando">
+                    Processando...
+                  </span>
+
+                } @else {
+
+                  <span
+                    class="status"
+                    [class.aberta]="nota.status === 1"
+                    [class.fechada]="nota.status === 3">
+
+                    {{ obterNomeStatus(nota.status) }}
+
+                  </span>
+
+                }
+
+              </td>
+
+              <td>
+
+                @if (nota.status === 1) {
+
+                  <button
+                    class="botao-imprimir"
+                    type="button"
+                    (click)="imprimir(nota)"
+                    [disabled]="imprimindoId !== null">
+
+                    @if (imprimindoId === nota.id) {
+                      ⟳ Processando...
+                    } @else {
+                      Imprimir
+                    }
+
+                  </button>
+
+                } @else {
+
+                  <span class="finalizada">
+                    Fechada
+                  </span>
+
+                }
+
+              </td>
+
+            </tr>
+
+          }
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  }
+
+</div>

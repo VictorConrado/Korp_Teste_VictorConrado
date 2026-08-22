@@ -22,6 +22,10 @@ export class NotaFiscalServico {
   private readonly url =
     'http://localhost:5189/api/notas-fiscais';
 
+  listar(): Observable<NotaFiscal[]> {
+    return this.http.get<NotaFiscal[]>(this.url);
+  }
+
   criar(
     requisicao: CriarNotaFiscalRequisicao
   ): Observable<NotaFiscal> {
